@@ -19,26 +19,33 @@ public class UserController {
 
     private final UserService userService;
 
-    // In a real system, admin check would come from security.
-    // For the interview demo we simulate it with a query param.
+    // constructor injection
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<?> getUser(@PathVariable String username) {
+    // GET /users/test.user
+    @GetMapping("/{username:.+}")
+    public ResponseEntity<?> getUser(@PathVariable("username") String username) {
         try {
             User user = userService.getUser(username);
             return ResponseEntity.ok(user);
         } catch (IllegalArgumentException ex) {
+            // user not found
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(error(ex.getMessage()));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(error("Unexpected error: " + ex.getClass().getSimpleName()
+                            + " - " + ex.getMessage()));
         }
     }
 
-    @PutMapping("/{username}")
+    // PUT /users/test.user?admin=true
+    @PutMapping("/{username:.+}")
     public ResponseEntity<?> updateUser(
-            @PathVariable String username,
+            @PathVariable("username") String username,
             @Valid @RequestBody UserUpdateRequest request,
             @RequestParam(name = "admin", defaultValue = "false") boolean isAdmin) {
 
@@ -51,6 +58,11 @@ public class UserController {
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(error(iae.getMessage()));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(error("Unexpected error: " + ex.getClass().getSimpleName()
+                            + " - " + ex.getMessage()));
         }
     }
 
