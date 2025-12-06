@@ -1,3 +1,7 @@
+![Java](https://img.shields.io/badge/Java-17-red)
+![SpringBoot](https://img.shields.io/badge/SpringBoot-3-green)
+![Maven](https://img.shields.io/badge/Maven-Build-blue)
+
 # Alfresco User Extension – Java 17 Maven Task
 
 This project is a **Java 17 + Maven + Spring Boot** implementation that simulates
